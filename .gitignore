@@ -1,5 +1,15 @@
+# ignore files starting with . or ~
+.*
+~*
+
+# ignore OS generated files
+ehthumbs.db
+Thumbs.db
+
+# ignore log, config and misc files
 *.log
 wp-config.php
+phpcs.xml.dist
 wp-content/advanced-cache.php
 wp-content/backup-db/
 wp-content/backups/
@@ -17,3 +27,8 @@ wp-content/plugins/hello.php
 /sitemap.xml
 /sitemap.xml.gz
 
+# track these files, if they exist
+!.gitignore
+!.editorconfig
+!README.md
+!CHANGELOG.md
