@@ -42,9 +42,13 @@ if ( ! function_exists( 'onyx_setup' ) ) :
 		 */
 		add_theme_support( 'post-thumbnails' );
 
+        // Register Custom Navigation Walker
+        require_once get_template_directory() . '/lib/navwalker/class-wp-bootstrap-navwalker.php';
+        
+        
 		// This theme uses wp_nav_menu() in one location.
 		register_nav_menus( array(
-			'menu-1' => esc_html__( 'Primary', 'onyx' ),
+			'primary' => esc_html__( 'Primary', 'onyx' ),
 		) );
 
 		/*
@@ -79,6 +83,9 @@ if ( ! function_exists( 'onyx_setup' ) ) :
 			'flex-width'  => true,
 			'flex-height' => true,
 		) );
+        
+        // Add support for custom header.
+        add_theme_support( 'custom-header' );
 	}
 endif;
 add_action( 'after_setup_theme', 'onyx_setup' );
@@ -120,6 +127,10 @@ add_action( 'widgets_init', 'onyx_widgets_init' );
  * Enqueue scripts and styles.
  */
 function onyx_scripts() {
+    wp_enqueue_script( 'bootstrap', get_template_directory_uri() . '/lib/js/bootstrap.js', array( 'jquery' ), '4.3.1', true );
+    
+    wp_enqueue_style( 'bootstrap', get_template_directory_uri() . '/lib/css/bootstrap.css', array(), '4.3.1' );
+    
 	wp_enqueue_style( 'onyx-style', get_stylesheet_uri() );
 
 	wp_enqueue_script( 'onyx-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20151215', true );
@@ -158,4 +169,3 @@ require get_template_directory() . '/inc/customizer.php';
 if ( defined( 'JETPACK__VERSION' ) ) {
 	require get_template_directory() . '/inc/jetpack.php';
 }
-

@@ -1,6 +1,6 @@
 <?php
 /**
- * The main template file
+ * The front page template file
  *
  * This is the most generic template file in a WordPress theme
  * and one of the two required files for a theme (the other being style.css).
@@ -15,13 +15,13 @@
 get_header();
 ?>
 
-<div id="primary" class="content-area">
+<div id="primary" class="container-fluid content-area">
     <main id="main" class="site-main">
-
+        <h1>this is the front page</h1>
         <?php
 		if ( have_posts() ) :
 
-			if ( is_home() && ! is_front_page() ) :
+			if ( ! is_home() && is_front_page() ) :
 				?>
         <header>
             <h1 class="page-title screen-reader-text">
