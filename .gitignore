@@ -26,7 +26,7 @@ wp-content/plugins/hello.php
 /readme.html
 /sitemap.xml
 /sitemap.xml.gz
-
+/lib
 # track these files, if they exist
 !.gitignore
 !.editorconfig
