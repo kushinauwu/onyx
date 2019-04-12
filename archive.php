@@ -26,6 +26,7 @@ get_header();
         <?php
 			/* Start the Loop */
 			while ( have_posts() ) :
+        /** @scrutinizer ignore-call */
 				the_post();
 
 				/*

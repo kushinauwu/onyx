@@ -143,6 +143,37 @@ function onyx_scripts() {
 }
 add_action( 'wp_enqueue_scripts', 'onyx_scripts' );
 
+/*
+ * Custom Post Type for slider
+ */
+function onyx_custom_slider() {
+   // Labels for custom post type slider
+	$slider_labels = array(
+		'name' => _x('Slides', 'post type general name'),
+		'singular_name' => _x('Slide', 'post type singular name'),
+		'menu_name' => 'CPT Slider',
+		'add_new' => _x('Add New', 'Slider'),
+		'add_new_item' => __('Add New Slide'),
+		'edit_item' => __('Edit Slide'),
+		'new_item' => __('New Slide'),
+		'view_item' => __('View Slide'),
+		'search_items' => __('Search Slides'),
+		'not_found' =>  __('No Slides Found'),
+		'not_found_in_trash' => __('No Slides Found in Trash'),
+		'parent_item_colon' => __('Parent Slide')
+	);
+	
+	// Register post type
+	register_post_type('custom-slides' , array(
+		'labels' => $slider_labels,
+		'public' => true,
+		'has_archive' => true,
+		'rewrite' => true,
+		'supports' => array('title', 'editor', 'thumbnail','excerpt')
+	) );
+}
+add_action( 'init', 'onyx_custom_slider', 0 );
+
 /**
  * Implement the Custom Header feature.
  */

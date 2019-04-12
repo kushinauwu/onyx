@@ -1011,3 +1011,41 @@ object {
 .gallery-caption {
     display: block;
 }
+
+
+/*extra styles*/
+
+.showcase-wrapper {
+    background-color: grey;
+    padding: 20px;
+}
+
+.carousel {
+    border: 5px solid white;
+    background: white;
+}
+
+.carousel-text {
+    background: rgba(100, 100, 100, 0.8);
+    position: absolute;
+    color: pink;
+    right: 20px;
+    top: 20px;
+    width: 35%;
+}
+
+.carousel img {
+    width: 100%;
+}
+
+.carousel-indicators li {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    opacity: 1;
+    border: 0;
+}
+
+.carousel-indicators .active {
+    background-color: #993408;
+}

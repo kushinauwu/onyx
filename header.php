@@ -33,7 +33,7 @@
 
 
             <nav id="site-navigation" class="navbar navbar-expand-md navbar-light main-navigation" role="navigation" style="background-image:url('<?php header_image(); ?>'); width=<?php echo absint( get_custom_header()->width ); ?> height=<?php echo absint( get_custom_header()->height ); ?>">
-                <div class="container">
+<div class="container">
                     <!-- Brand and toggle get grouped for better mobile display -->
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#this-menu" aria-controls="this-menu" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
