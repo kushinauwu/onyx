@@ -32,29 +32,36 @@
             </div><!-- .site-branding -->
 
 
-            <nav id="site-navigation" class="navbar navbar-expand-md navbar-light bg-light main-navigation" role="navigation" style="background-image:url('<?php header_image(); ?>'); width=<?php echo absint( get_custom_header()->width ); ?> height=<?php echo absint( get_custom_header()->height ); ?>">
+            <nav id="site-navigation" class="navbar navbar-expand-md navbar-light main-navigation" role="navigation" style="background-image:url('<?php header_image(); ?>'); width=<?php echo absint( get_custom_header()->width ); ?> height=<?php echo absint( get_custom_header()->height ); ?>">
                 <div class="container">
                     <!-- Brand and toggle get grouped for better mobile display -->
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-controls="bs-example-navbar-collapse-1" aria-expanded="false" aria-label="Toggle navigation">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#this-menu" aria-controls="this-menu" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <a class="navbar-brand" href="#">
-                        <?php if ( function_exists( 'the_custom_logo' ) ) {
- the_custom_logo();
-} ?>
+                        <?php if ( function_exists( 'the_custom_logo' ) && has_custom_logo() ) {
+                        the_custom_logo();
+                            }
+                        else { ?>
+                        <a href="<?php home_url(); ?>">
+                            <img src="<?php echo get_stylesheet_directory_uri(); ?>/lib/img/logo.png"></a>
+                        <?php }
+                        ?>
                     </a>
-                    <?php
+                    <div class="collapse navbar-collapse" id="this-menu">
+                        <?php
 		wp_nav_menu( array(
 			'theme_location'    => 'primary',
 			'depth'             => 2,
 			'container'         => 'div',
 			'container_class'   => 'collapse navbar-collapse',
-			'container_id'      => 'bs-example-navbar-collapse-1',
+			'container_id'      => 'this-menu',
 			'menu_class'        => 'nav navbar-nav',
 			'fallback_cb'       => 'WP_Bootstrap_Navwalker::fallback',
 			'walker'            => new WP_Bootstrap_Navwalker(),
 		) );
 		?>
+                    </div>
                 </div>
             </nav>
         </header><!-- #masthead -->
