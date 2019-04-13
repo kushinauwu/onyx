@@ -36,7 +36,13 @@ get_header();
                                 <?php the_title(); ?>
                             </h1>
                             <p>
-                                <?php the_excerpt(); ?>
+                                <?php
+                                if ( has_excerpt() ) {
+                                    the_excerpt();
+                                }
+                                else {
+                                    the_content();
+                                } ?>
                             </p>
                         </div>
                     </div>
