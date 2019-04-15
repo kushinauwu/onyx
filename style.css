@@ -1013,7 +1013,7 @@ object {
 }
 
 
-/*extra styles*/
+/*Post Slider*/
 
 .showcase-wrapper {
     background-color: grey;
@@ -1048,4 +1048,96 @@ object {
 
 .carousel-indicators .active {
     background-color: #993408;
+}
+
+/* Subpages list */
+
+.inactive {
+    display: none
+}
+
+.active {
+    display: block;
+}
+
+.page-children {
+    background: #d0d0d0;
+    margin-top: 20px;
+    border: 2px solid #d0d0d0;
+}
+
+.page-children ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.parent-wrapper {
+    margin-top: 10px;
+}
+
+.parent-list {
+    padding: 5px;
+    list-style: none;
+    cursor: pointer;
+}
+
+.parent-list:hover {
+    background: #993408;
+}
+
+.parent-list a {
+    text-decoration: none;
+    color: #993408;
+    font-size: 17px;
+    text-transform: uppercase;
+}
+
+.parent-list:hover:after {
+    content: "";
+    width: 0;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    display: inline-block;
+    right: 0;
+    top: 0px;
+    border-top: 18px solid transparent;
+    border-bottom: 17px solid transparent;
+    border-left: 15px solid #993408;
+}
+
+.parent-list:hover a,
+.parent-list a:hover {
+    color: #fff;
+}
+
+.children-list {
+    background: white;
+}
+
+.childgrid {
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+}
+
+.child {
+    margin: 10px;
+}
+
+.child img {
+    width: 100%;
+}
+
+.child p {
+    margin: 0;
+    font-size: 15px;
+    color: #333;
+    word-break: break-word;
+
+}
+
+p.childpage-title {
+    font-weight: bold;
+    color: #000;
 }

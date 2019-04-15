@@ -64,6 +64,75 @@ get_header();
                 </a>
             </div>
         </div>
+
+        <div class="page-children container">
+            <?php
+                $args = array(
+                            'post_parent' => $post->ID,
+                            'post_type' => 'page',
+                            'orderby' => 'menu_order'
+                        );
+                //args for child pages of main page
+                $parent_query = new WP_Query( $args );
+                ?>
+            <?php while ( $parent_query->have_posts() ) : $parent_query->the_post(); 
+                                        $classes = [
+                                                    'parent-list',
+                                                    'id'=>get_the_ID()
+                                                    ];
+                            ?>
+            <div class="row">
+                <div class="col-lg-3 parent-wrapper">
+                    <div <?php post_class( $classes ); ?>
+                        id="
+                        <?php the_ID(); ?>"
+                        onmouseover="hoverParent(this.id)"
+                        onmouseout="parentMouseOut(this.id)">
+
+                        <a href="<?php the_permalink(); ?>">
+                            <?php the_title(); ?></a>
+
+                    </div>
+                </div>
+                <div class="col-lg-9 children-list">
+                    <?php
+                            $child_args = array(
+                                                'post_parent' => $id,
+                                                'post_type' => 'page',
+                                                'orderby' => 'menu_order'
+                                                );
+                    //args for child pages of subpages of homepage
+                            $c_query = new WP_Query( $child_args );
+                            ?>
+                    <div class="child-list">
+                        <div class="childgrid">
+                            <?php while ( $c_query->have_posts() ) : $c_query->the_post(); 
+                                $cid = wp_get_post_parent_id( get_the_ID() );
+                                $c_classes = [
+                                            $cid.='-child',
+                                            'child',
+                                            'post_parent',
+                                            'inactive'
+                                            ];
+                                ?>
+                            <div <?php post_class( $c_classes ); ?>>
+                                <?php the_post_thumbnail(); ?>
+                                <p class="childpage-title">
+                                    <?php the_title(); ?>
+                                </p>
+                                <p class="childpage-excerpt">
+                                    <?php the_excerpt(); ?>
+                                </p>
+                            </div>
+
+                            <?php endwhile; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php endwhile; wp_reset_postdata(); ?>
+        </div>
+
     </main><!-- #main -->
 </div><!-- #primary -->
 
