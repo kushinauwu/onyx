@@ -49,6 +49,7 @@ if ( ! function_exists( 'onyx_setup' ) ) :
 		// This theme uses wp_nav_menu() in one location.
 		register_nav_menus( array(
 			'primary' => esc_html__( 'Primary', 'onyx' ),
+            'secondary' => esc_html__( 'Secondary', 'onyx' ),
 		) );
 
 		/*
@@ -118,14 +119,264 @@ function onyx_widgets_init() {
 		'name'          => esc_html__( 'Sidebar', 'onyx' ),
 		'id'            => 'sidebar-1',
 		'description'   => esc_html__( 'Add widgets here.', 'onyx' ),
-		'before_widget' => '<section id="%1$s" class="widget %2$s">',
+		'before_widget' => '<section id="%1$s" class="widget %2$s col-md-3">',
 		'after_widget'  => '</section>',
-		'before_title'  => '<h2 class="widget-title">',
-		'after_title'   => '</h2>',
+		'before_title'  => '<div class="widget-title"><h4>',
+		'after_title'   => '</h4></div>',
 	) );
     
 }
 add_action( 'widgets_init', 'onyx_widgets_init' );
+
+/**
+ * Create widget showing posts from news category
+ * 4 methods: construct, widget, form, update
+ */
+
+class News_Category extends WP_Widget {
+
+	// create new isntance for news category posts
+	public function __construct() {
+		$widget_ops = array(
+			'classname'                   => 'news_entries',
+			'description'                 => __( 'Your site&#8217;s news Posts.' ),
+			'customize_selective_refresh' => true,
+		);
+		parent::__construct( 'news-posts', __( 'News Posts' ), $widget_ops );
+		$this->alt_option_name = 'news_entries';
+	}
+
+	// output content for the widget
+	public function widget( $args, $instance ) {
+		if ( ! isset( $args['widget_id'] ) ) {
+			$args['widget_id'] = $this->id;
+		}
+
+		$title = ( ! empty( $instance['title'] ) ) ? $instance['title'] : __( 'News Posts' );
+
+		$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
+
+		$number = ( ! empty( $instance['number'] ) ) ? absint( $instance['number'] ) : 5;
+		if ( ! $number ) {
+			$number = 5;
+		}
+		$show_date = isset( $instance['show_date'] ) ? $instance['show_date'] : false;
+
+		$r = new WP_Query(
+			apply_filters(
+				'widget_posts_args',
+				array(
+					'posts_per_page'      => $number,
+                    'category_name' => 'news',
+					'no_found_rows'       => true,
+					'post_status'         => 'publish',
+					'ignore_sticky_posts' => true,
+				),
+				$instance
+			)
+		);
+
+		if ( ! $r->have_posts() ) {
+			return;
+		}
+		 echo $args['before_widget']; 
+		if ( $title ) {
+			echo $args['before_title'] . $title . $args['after_title'];
+		}
+		?>
+<ul>
+    <?php foreach ( $r->posts as $recent_post ) : ?>
+    <?php
+				$post_title = get_the_title( $recent_post->ID );
+				$title      = ( ! empty( $post_title ) ) ? $post_title : __( '(no title)' );
+				?>
+    <li>
+        <a href="<?php the_permalink( $recent_post->ID ); ?>">
+            <?php echo $title; ?></a>
+        <?php if ( $show_date ) : ?>
+        <span class="post-date">
+            <?php echo get_the_date( '', $recent_post->ID ); ?></span>
+        <?php endif; ?>
+    </li>
+    <?php endforeach; ?>
+</ul>
+<?php
+		echo $args['after_widget'];
+	}
+
+	// handles widget form settings
+	public function update( $new_instance, $old_instance ) {
+		$instance              = $old_instance;
+		$instance['title']     = sanitize_text_field( $new_instance['title'] );
+		$instance['number']    = (int) $new_instance['number'];
+		$instance['show_date'] = isset( $new_instance['show_date'] ) ? (bool) $new_instance['show_date'] : false;
+		return $instance;
+	}
+
+	// output form settings on widgets menu
+	public function form( $instance ) {
+		$title     = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : '';
+		$number    = isset( $instance['number'] ) ? absint( $instance['number'] ) : 5;
+		$show_date = isset( $instance['show_date'] ) ? (bool) $instance['show_date'] : false;
+		?>
+<p><label for="<?php echo $this->get_field_id( 'title' ); ?>">
+        <?php _e( 'Title:' ); ?></label>
+    <input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $title; ?>" /></p>
+
+<p><label for="<?php echo $this->get_field_id( 'number' ); ?>">
+        <?php _e( 'Number of posts to show:' ); ?></label>
+    <input class="tiny-text" id="<?php echo $this->get_field_id( 'number' ); ?>" name="<?php echo $this->get_field_name( 'number' ); ?>" type="number" step="1" min="1" value="<?php echo $number; ?>" size="3" /></p>
+
+<p><input class="checkbox" type="checkbox" <?php checked( $show_date ); ?> id="
+    <?php echo $this->get_field_id( 'show_date' ); ?>" name="
+    <?php echo $this->get_field_name( 'show_date' ); ?>" />
+    <label for="<?php echo $this->get_field_id( 'show_date' ); ?>">
+        <?php _e( 'Display post date?' ); ?></label></p>
+<?php
+	}
+}
+
+/**
+ * create social media widget
+ */
+class Social_Media extends WP_Widget {
+
+/**
+* Register widget with WordPress.
+*/
+public function __construct() {
+$widget_ops = array(
+			'classname'                   => 'social_media',
+			'description'                 => __( 'Your Social Media links.' ),
+			'customize_selective_refresh' => true,
+		);
+		parent::__construct( 'social-media', __( 'Social Media' ), $widget_ops );
+		$this->alt_option_name = 'social_media';
+}
+
+/**
+* Front-end display of widget.
+*/
+public function widget($args, $instance) {
+
+    if ( ! isset( $args['widget_id'] ) ) {
+			$args['widget_id'] = $this->id;
+		}
+
+		$title = ( ! empty( $instance['title'] ) ) ? $instance['title'] : __( 'Social Media' );
+
+		$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
+    
+$facebook = $instance['facebook'];
+$twitter = $instance['twitter'];
+$linkedin = $instance['linkedin'];
+$rss = $instance['rss'];
+
+// social media link
+$facebook_link = '<a target="_blank" class=" social_link" id="facebook" href="' . $facebook . '">
+<img id="facebook-logo">
+<span>Facebook</span></a>';
+$twitter_link = '<a target="_blank" class=" social_link" id="twitter" href="' . $twitter . '"><img id="twitter-logo"><span>Twitter</span></a>';
+$linkedin_link = '<a target="_blank" class=" social_link" id="linkedin" href="' . $linkedin . '"><img id="linkedin-logo"><span>LinkedIn</span></a>';
+$rss_link = '<a target="_blank" class=" social_link" id= "rss" href="' . $rss . '"><img id="rss-logo"><span>RSS</span></a>';
+
+echo $args['before_widget'];
+
+if ( $title ) {
+echo $args['before_title'] . $title . $args['after_title'];
+}
+    ?>
+
+<div class="social-media">
+    <ul class=" social-media-list list-unstyled">
+        <li>
+            <?php echo (!empty($facebook) ) ? $facebook_link : ''; ?>
+        </li>
+        <li>
+            <?php echo (!empty($twitter) ) ? $twitter_link : '';?>
+        </li>
+        <li>
+            <?php echo (!empty($linkedin) ) ? $linkedin_link : ''; ?>
+        </li>
+        <li>
+            <?php echo (!empty($rss) ) ? $rss_link : ''; ?>
+        </li>
+
+    </ul>
+</div>
+
+<?php
+echo $args['after_widget'];
+}
+
+/**
+* Back-end widget form.
+
+*/
+    
+     public function update($new_instance, $old_instance) {
+        $instance              = $old_instance;
+		$instance['title']     = sanitize_text_field( $new_instance['title'] );
+        $instance['facebook']     = sanitize_text_field( $new_instance['facebook'] );
+        $instance['twitter']     = sanitize_text_field( $new_instance['twitter'] );
+        $instance['linkedin']     = sanitize_text_field( $new_instance['linkedin'] );
+        $instance['rss']     = sanitize_text_field( $new_instance['rss'] );
+
+        return $instance;
+    }
+    
+public function form($instance) {
+$title     = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : '';
+
+    $facebook     = isset( $instance['facebook'] ) ? esc_attr( $instance['facebook'] ) : '';
+    $twitter     = isset( $instance['twitter'] ) ? esc_attr( $instance['twitter'] ) : '';
+    $linkedin     = isset( $instance['linkedin'] ) ? esc_attr( $instance['linkedin'] ) : '';
+    $rss     = isset( $instance['rss'] ) ? esc_attr( $instance['rss'] ) : '';
+
+?>
+
+<p>
+    <label for="<?php echo $this->get_field_id('title'); ?>">
+        <?php _e('Title:'); ?></label>
+    <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo ($title); ?>">
+</p>
+
+<p>
+    <label for="<?php echo $this->get_field_id('facebook'); ?>">
+        <?php _e('Facebook:'); ?></label>
+    <input class="widefat" id="<?php echo $this->get_field_id('facebook'); ?>" name="<?php echo $this->get_field_name('facebook'); ?>" type="url" value="<?php echo ($facebook); ?>">
+</p>
+
+<p>
+    <label for="<?php echo $this->get_field_id('twitter'); ?>">
+        <?php _e('Twitter:'); ?></label>
+    <input class="widefat" id="<?php echo $this->get_field_id('twitter'); ?>" name="<?php echo $this->get_field_name('twitter'); ?>" type="url" value="<?php echo ($twitter); ?>">
+</p>
+
+<p>
+    <label for="<?php echo $this->get_field_id('linkedin'); ?>">
+        <?php _e('LinkedIn:'); ?></label>
+    <input class="widefat" id="<?php echo $this->get_field_id('linkedin'); ?>" name="<?php echo $this->get_field_name('linkedin'); ?>" type="url" value="<?php echo esc_attr($linkedin); ?>">
+</p>
+
+<p>
+    <label for="<?php echo $this->get_field_id('rss'); ?>">
+        <?php _e('RSS:'); ?></label>
+    <input class="widefat" id="<?php echo $this->get_field_id('rss'); ?>" name="<?php echo $this->get_field_name('rss'); ?>" type="url" value="<?php echo esc_attr($rss); ?>">
+</p>
+
+<?php
+    }
+
+}
+
+// Register widget for posts from news category
+function onyx_news_load() {
+    register_widget('News_Category');
+    register_widget('Social_Media');
+}
+
+add_action('widgets_init', 'onyx_news_load');
 
 /**
  * Enqueue scripts and styles.
@@ -134,7 +385,7 @@ function onyx_scripts() {
     wp_enqueue_script( 'bootstrap', get_template_directory_uri() . '/lib/js/bootstrap.js', array( 'jquery' ), '4.3.1', true );
     
     wp_enqueue_style( 'bootstrap', get_template_directory_uri() . '/lib/css/bootstrap.css', array(), '4.3.1' );
-    
+     
 	wp_enqueue_style( 'onyx-style', get_stylesheet_uri() );
 
 	wp_enqueue_script( 'onyx-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20151215', true );

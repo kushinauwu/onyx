@@ -11,13 +11,21 @@ get_header();
     <main id="main" class="site-main">
         <div class="showcase-wrapper">
             <!-- carousel for cpt -->
-            <div id="carouselSlider" class="carousel slide container" data-ride="carousel">
+            <div id="carouselSlider" class="vertical carousel slide container" data-ride="carousel">
                 <ol class="carousel-indicators">
                     <li data-target="#carouselSlider" data-slide-to="0" class="active"></li>
                     <li data-target="#carouselSlider" data-slide-to="1"></li>
                     <li data-target="#carouselSlider" data-slide-to="2"></li>
                     <li data-target="#carouselSlider" data-slide-to="3"></li>
                 </ol>
+                <a class="carousel-control-prev" href="#carouselSlider" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselSlider" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
                 <div class="carousel-inner">
                     <?php $args = array(
                                                 'post_type' => 'custom-slides',
@@ -54,14 +62,7 @@ get_header();
                     <?php endif;
                                 wp_reset_postdata(); ?>
                 </div>
-                <a class="carousel-control-prev" href="#carouselSlider" role="button" data-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#carouselSlider" role="button" data-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </a>
+
             </div>
         </div>
 
