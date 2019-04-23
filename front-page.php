@@ -57,7 +57,7 @@ get_header();
                     <?php $counter++; ?>
                     <?php endwhile; else : ?>
                     <p>
-                        <?php __('No post found'); ?>
+                        <?php __('No post found', 'onyx'); ?>
                     </p>
                     <?php endif;
                                 wp_reset_postdata(); ?>
@@ -66,6 +66,7 @@ get_header();
             </div>
         </div>
 
+        <!-- section to display subpages of the front page's child pages -->
         <div class="page-children container">
             <?php
                 $args = array(

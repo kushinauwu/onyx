@@ -902,11 +902,13 @@ textarea {
     list-style-image: url('lib/img/footer-bullethover.jpg');
 }
 
-.news_entries ul li a {
+.news_entries ul li a,
+.widget_nav_menu ul li a {
     color: #888;
 }
 
-.news_entries ul li a:hover {
+.news_entries ul li a:hover,
+.widget_nav_menu ul li a:hover {
     text-decoration: none;
     color: #993408;
 }

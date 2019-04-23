@@ -103,8 +103,6 @@ add_action( 'after_setup_theme', 'onyx_setup' );
  */
 function onyx_content_width() {
 	// This variable is intended to be overruled from themes.
-	// Open WPCS issue: {@link https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/issues/1043}.
-	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 	$GLOBALS['content_width'] = apply_filters( 'onyx_content_width', 640 );
 }
 add_action( 'after_setup_theme', 'onyx_content_width', 0 );
@@ -112,7 +110,6 @@ add_action( 'after_setup_theme', 'onyx_content_width', 0 );
 /**
  * Register widget area.
  *
- * @link https://developer.wordpress.org/themes/functionality/sidebars/#registering-a-sidebar
  */
 function onyx_widgets_init() {
 	register_sidebar( array(
@@ -139,10 +136,10 @@ class News_Category extends WP_Widget {
 	public function __construct() {
 		$widget_ops = array(
 			'classname'                   => 'news_entries',
-			'description'                 => __( 'Your site&#8217;s news Posts.' ),
+			'description'                 => __( 'Your site&#8217;s news Posts.', 'onyx' ),
 			'customize_selective_refresh' => true,
 		);
-		parent::__construct( 'news-posts', __( 'News Posts' ), $widget_ops );
+		parent::__construct( 'news-posts', __( 'News Posts', 'onyx' ), $widget_ops );
 		$this->alt_option_name = 'news_entries';
 	}
 
@@ -151,18 +148,15 @@ class News_Category extends WP_Widget {
 		if ( ! isset( $args['widget_id'] ) ) {
 			$args['widget_id'] = $this->id;
 		}
-
-		$title = ( ! empty( $instance['title'] ) ) ? $instance['title'] : __( 'News Posts' );
-
+		$title = ( ! empty( $instance['title'] ) ) ? $instance['title'] : __( 'News Posts', 'onyx' );
 		$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
-
 		$number = ( ! empty( $instance['number'] ) ) ? absint( $instance['number'] ) : 5;
 		if ( ! $number ) {
 			$number = 5;
 		}
 		$show_date = isset( $instance['show_date'] ) ? $instance['show_date'] : false;
 
-		$r = new WP_Query(
+		$news_posts_query = new WP_Query(
 			apply_filters(
 				'widget_posts_args',
 				array(
@@ -176,7 +170,7 @@ class News_Category extends WP_Widget {
 			)
 		);
 
-		if ( ! $r->have_posts() ) {
+		if ( ! $news_posts_query->have_posts() ) {
 			return;
 		}
 		 echo $args['before_widget']; 
@@ -185,17 +179,17 @@ class News_Category extends WP_Widget {
 		}
 		?>
 <ul>
-    <?php foreach ( $r->posts as $recent_post ) : ?>
+    <?php foreach ( $news_posts_query->posts as $news_post ) : ?>
     <?php
-				$post_title = get_the_title( $recent_post->ID );
-				$title      = ( ! empty( $post_title ) ) ? $post_title : __( '(no title)' );
+				$post_title = get_the_title( $news_post->ID );
+				$title      = ( ! empty( $post_title ) ) ? $post_title : __( '(no title)', 'onyx' );
 				?>
     <li>
-        <a href="<?php the_permalink( $recent_post->ID ); ?>">
+        <a href="<?php the_permalink( $news_post->ID ); ?>">
             <?php echo $title; ?></a>
         <?php if ( $show_date ) : ?>
         <span class="post-date">
-            <?php echo get_the_date( '', $recent_post->ID ); ?></span>
+            <?php echo get_the_date( '', $news_post->ID ); ?></span>
         <?php endif; ?>
     </li>
     <?php endforeach; ?>
@@ -220,18 +214,18 @@ class News_Category extends WP_Widget {
 		$show_date = isset( $instance['show_date'] ) ? (bool) $instance['show_date'] : false;
 		?>
 <p><label for="<?php echo $this->get_field_id( 'title' ); ?>">
-        <?php _e( 'Title:' ); ?></label>
+        <?php _e( 'Title:', 'onyx' ); ?></label>
     <input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $title; ?>" /></p>
 
 <p><label for="<?php echo $this->get_field_id( 'number' ); ?>">
-        <?php _e( 'Number of posts to show:' ); ?></label>
+        <?php _e( 'Number of posts to show:', 'onyx' ); ?></label>
     <input class="tiny-text" id="<?php echo $this->get_field_id( 'number' ); ?>" name="<?php echo $this->get_field_name( 'number' ); ?>" type="number" step="1" min="1" value="<?php echo $number; ?>" size="3" /></p>
 
 <p><input class="checkbox" type="checkbox" <?php checked( $show_date ); ?> id="
     <?php echo $this->get_field_id( 'show_date' ); ?>" name="
     <?php echo $this->get_field_name( 'show_date' ); ?>" />
     <label for="<?php echo $this->get_field_id( 'show_date' ); ?>">
-        <?php _e( 'Display post date?' ); ?></label></p>
+        <?php _e( 'Display post date?', 'onyx' ); ?></label></p>
 <?php
 	}
 }
@@ -241,52 +235,44 @@ class News_Category extends WP_Widget {
  */
 class Social_Media extends WP_Widget {
 
-/**
-* Register widget with WordPress.
-*/
+// create new instance for social media widget
 public function __construct() {
 $widget_ops = array(
 			'classname'                   => 'social_media',
-			'description'                 => __( 'Your Social Media links.' ),
+			'description'                 => __( 'Your Social Media links.', 'onyx' ),
 			'customize_selective_refresh' => true,
 		);
-		parent::__construct( 'social-media', __( 'Social Media' ), $widget_ops );
+		parent::__construct( 'social-media', __( 'Social Media', 'onyx' ), $widget_ops );
 		$this->alt_option_name = 'social_media';
 }
 
-/**
-* Front-end display of widget.
-*/
+// shows output of widget
 public function widget($args, $instance) {
-
     if ( ! isset( $args['widget_id'] ) ) {
 			$args['widget_id'] = $this->id;
 		}
-
-		$title = ( ! empty( $instance['title'] ) ) ? $instance['title'] : __( 'Social Media' );
-
-		$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
+    $title = ( ! empty( $instance['title'] ) ) ? $instance['title'] : __( 'Social Media', 'onyx' );
+	$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
     
-$facebook = $instance['facebook'];
-$twitter = $instance['twitter'];
-$linkedin = $instance['linkedin'];
-$rss = $instance['rss'];
+    $facebook = $instance['facebook'];
+    $twitter = $instance['twitter'];
+    $linkedin = $instance['linkedin'];
+    $rss = $instance['rss'];
 
-// social media link
-$facebook_link = '<a target="_blank" class=" social_link" id="facebook" href="' . $facebook . '">
-<img id="facebook-logo">
-<span>Facebook</span></a>';
-$twitter_link = '<a target="_blank" class=" social_link" id="twitter" href="' . $twitter . '"><img id="twitter-logo"><span>Twitter</span></a>';
-$linkedin_link = '<a target="_blank" class=" social_link" id="linkedin" href="' . $linkedin . '"><img id="linkedin-logo"><span>LinkedIn</span></a>';
-$rss_link = '<a target="_blank" class=" social_link" id= "rss" href="' . $rss . '"><img id="rss-logo"><span>RSS</span></a>';
+    // social media links
+    $facebook_link = '<a target="_blank" class=" social_link" id="facebook" href="' . $facebook . '">
+    <img id="facebook-logo">
+    <span>Facebook</span></a>';
+    $twitter_link = '<a target="_blank" class=" social_link" id="twitter" href="' . $twitter . '"><img id="twitter-logo"><span>Twitter</span></a>';
+    $linkedin_link = '<a target="_blank" class=" social_link" id="linkedin" href="' . $linkedin . '"><img id="linkedin-logo"><span>LinkedIn</span></a>';
+    $rss_link = '<a target="_blank" class=" social_link" id= "rss" href="' . $rss . '"><img id="rss-logo"><span>RSS</span></a>';
 
-echo $args['before_widget'];
+    echo $args['before_widget'];
 
-if ( $title ) {
-echo $args['before_title'] . $title . $args['after_title'];
-}
-    ?>
-
+    if ( $title ) {
+    echo $args['before_title'] . $title . $args['after_title'];
+    }
+?>
 <div class="social-media">
     <ul class=" social-media-list list-unstyled">
         <li>
@@ -301,81 +287,70 @@ echo $args['before_title'] . $title . $args['after_title'];
         <li>
             <?php echo (!empty($rss) ) ? $rss_link : ''; ?>
         </li>
-
     </ul>
 </div>
-
 <?php
-echo $args['after_widget'];
-}
+    echo $args['after_widget'];
+    }
 
-/**
-* Back-end widget form.
-
-*/
-    
+    // handles widget form settings
      public function update($new_instance, $old_instance) {
-        $instance              = $old_instance;
-		$instance['title']     = sanitize_text_field( $new_instance['title'] );
-        $instance['facebook']     = sanitize_text_field( $new_instance['facebook'] );
-        $instance['twitter']     = sanitize_text_field( $new_instance['twitter'] );
-        $instance['linkedin']     = sanitize_text_field( $new_instance['linkedin'] );
-        $instance['rss']     = sanitize_text_field( $new_instance['rss'] );
+        $instance = $old_instance;
+		$instance['title'] = sanitize_text_field( $new_instance['title'] );
+        $instance['facebook'] = sanitize_text_field( $new_instance['facebook'] );
+        $instance['twitter'] = sanitize_text_field( $new_instance['twitter'] );
+        $instance['linkedin'] = sanitize_text_field( $new_instance['linkedin'] );
+        $instance['rss'] = sanitize_text_field( $new_instance['rss'] );
 
         return $instance;
     }
     
-public function form($instance) {
-$title     = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : '';
-
-    $facebook     = isset( $instance['facebook'] ) ? esc_attr( $instance['facebook'] ) : '';
-    $twitter     = isset( $instance['twitter'] ) ? esc_attr( $instance['twitter'] ) : '';
-    $linkedin     = isset( $instance['linkedin'] ) ? esc_attr( $instance['linkedin'] ) : '';
-    $rss     = isset( $instance['rss'] ) ? esc_attr( $instance['rss'] ) : '';
-
+    // form settings on widget menu
+    public function form($instance) {
+        $title = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : '';
+        $facebook = isset( $instance['facebook'] ) ? esc_attr( $instance['facebook'] ) : '';
+        $twitter = isset( $instance['twitter'] ) ? esc_attr( $instance['twitter'] ) : '';
+        $linkedin = isset( $instance['linkedin'] ) ? esc_attr( $instance['linkedin'] ) : '';
+        $rss = isset( $instance['rss'] ) ? esc_attr( $instance['rss'] ) : '';
 ?>
-
 <p>
     <label for="<?php echo $this->get_field_id('title'); ?>">
-        <?php _e('Title:'); ?></label>
+        <?php _e('Title:', 'onyx'); ?></label>
     <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo ($title); ?>">
 </p>
 
 <p>
     <label for="<?php echo $this->get_field_id('facebook'); ?>">
-        <?php _e('Facebook:'); ?></label>
+        <?php _e('Facebook:','onyx'); ?></label>
     <input class="widefat" id="<?php echo $this->get_field_id('facebook'); ?>" name="<?php echo $this->get_field_name('facebook'); ?>" type="url" value="<?php echo ($facebook); ?>">
 </p>
 
 <p>
     <label for="<?php echo $this->get_field_id('twitter'); ?>">
-        <?php _e('Twitter:'); ?></label>
+        <?php _e('Twitter:', 'onyx'); ?></label>
     <input class="widefat" id="<?php echo $this->get_field_id('twitter'); ?>" name="<?php echo $this->get_field_name('twitter'); ?>" type="url" value="<?php echo ($twitter); ?>">
 </p>
 
 <p>
     <label for="<?php echo $this->get_field_id('linkedin'); ?>">
-        <?php _e('LinkedIn:'); ?></label>
+        <?php _e('LinkedIn:','onyx'); ?></label>
     <input class="widefat" id="<?php echo $this->get_field_id('linkedin'); ?>" name="<?php echo $this->get_field_name('linkedin'); ?>" type="url" value="<?php echo esc_attr($linkedin); ?>">
 </p>
 
 <p>
     <label for="<?php echo $this->get_field_id('rss'); ?>">
-        <?php _e('RSS:'); ?></label>
+        <?php _e('RSS:','onyx'); ?></label>
     <input class="widefat" id="<?php echo $this->get_field_id('rss'); ?>" name="<?php echo $this->get_field_name('rss'); ?>" type="url" value="<?php echo esc_attr($rss); ?>">
 </p>
-
 <?php
     }
-
 }
 
-// Register widget for posts from news category
+// Register widget for posts from news category and social media widget
 function onyx_news_load() {
     register_widget('News_Category');
     register_widget('Social_Media');
 }
-
 add_action('widgets_init', 'onyx_news_load');
 
 /**
@@ -406,18 +381,18 @@ add_action( 'wp_enqueue_scripts', 'onyx_scripts' );
 function onyx_custom_slider() {
    // Labels for custom post type slider
 	$slider_labels = array(
-		'name' => _x('Slides', 'post type general name'),
-		'singular_name' => _x('Slide', 'post type singular name'),
+		'name' => __('Slides', 'onyx'),
+		'singular_name' => __('Slide', 'onyx'),
 		'menu_name' => 'CPT Slider',
-		'add_new' => _x('Add New', 'Slider'),
-		'add_new_item' => __('Add New Slide'),
-		'edit_item' => __('Edit Slide'),
-		'new_item' => __('New Slide'),
-		'view_item' => __('View Slide'),
-		'search_items' => __('Search Slides'),
-		'not_found' =>  __('No Slides Found'),
-		'not_found_in_trash' => __('No Slides Found in Trash'),
-		'parent_item_colon' => __('Parent Slide')
+		'add_new' => __('Add New', 'onyx'),
+		'add_new_item' => __('Add New Slide', 'onyx'),
+		'edit_item' => __('Edit Slide', 'onyx'),
+		'new_item' => __('New Slide', 'onyx'),
+		'view_item' => __('View Slide', 'onyx'),
+		'search_items' => __('Search Slides', 'onyx'),
+		'not_found' =>  __('No Slides Found', 'onyx'),
+		'not_found_in_trash' => __('No Slides Found in Trash', 'onyx'),
+		'parent_item_colon' => __('Parent Slide', 'onyx')
 	);
 	
 	// Register post type

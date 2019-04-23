@@ -15,21 +15,24 @@ function onyx_customize_register( $wp_customize ) {
 	$wp_customize->get_setting( 'blogdescription' )->transport  = 'postMessage';
 	$wp_customize->get_setting( 'header_textcolor' )->transport = 'postMessage';
     
-    // add footer text customization settings
+    // add footer text+logo section
     $wp_customize->add_section('footer_settings_section', array(
     'title' => 'Footer'
     ));
     
-    $wp_customize->add_setting('text_setting', array('default' => 'Default Text for Footer Section',));
-    
+    // add footer text
+    $wp_customize->add_setting('text_setting', array(
+        'default' => 'Default Text for Footer Section',
+        'sanitize_callback'  => 'esc_attr',
+    ));
     $wp_customize->add_control('text_setting', array(
     'label' => 'Footer Text',
         'section' => 'footer_settings_section',
         'type' => 'textarea',
     ));
     
-    // add footer logo settings section
-    $wp_customize->add_setting('footer_logo');
+    // add footer logo 
+    $wp_customize->add_setting('footer_logo', array('sanitize_callback'  => 'esc_attr',));
     $wp_customize->add_control(new WP_Customize_Upload_Control($wp_customize, 'footer_logo', array(
     'label' => __('Footer Logo', 'onyx'),
         'section' => 'footer_settings_section',
