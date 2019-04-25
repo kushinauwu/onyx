@@ -1,6 +1,6 @@
 /*!
 Theme Name: Onyx
-Theme URI: http://underscores.me/
+Theme URI: http://13.233.148.140
 Author: kushinauwu
 Author URI: https://github.com/kushinauwu
 Description: Description
@@ -1082,12 +1082,8 @@ textarea {
     top: 0;
     bottom: 0;
     margin: auto;
-    /* height: 20px; */
-    /* padding-top: 15%; */
-    /* padding-bottom: 15%; */
     right: 10px;
     left: auto;
-    /* border-left: 2px solid white; */
     padding-top: 12%;
     padding-left: 1%;
     padding-right: 1%;
@@ -1130,16 +1126,13 @@ textarea {
 
 .carousel-control-prev {
     align-items: flex-start;
-    /* position: absolute; */
     margin-top: 10px;
     left: 90%;
     z-index: 16;
 }
 
 .carousel-control-next {
-    /* right: 0; */
     align-items: flex-end;
-    /* position: absolute; */
     margin-bottom: 10px;
     left: 90%;
     z-index: 16;
