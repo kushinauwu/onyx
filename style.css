@@ -1114,7 +1114,7 @@ textarea {
 .vertical .carousel-item-next,
 .vertical .active.carousel-item-right {
     -webkit-transform: translate3d(0, 100%, 0);
-    transform: translate3d(0, 100% 0);
+    transform: translate3d(0, 100%, 0);
 }
 
 .vertical .carousel-item-prev,
@@ -1128,6 +1128,7 @@ textarea {
     align-items: flex-start;
     margin-top: 10px;
     left: 90%;
+    bottom: 90%;
     z-index: 16;
 }
 
@@ -1135,6 +1136,7 @@ textarea {
     align-items: flex-end;
     margin-bottom: 10px;
     left: 90%;
+    top: 90%;
     z-index: 16;
 }
 
