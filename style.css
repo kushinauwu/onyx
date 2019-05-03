@@ -887,6 +887,7 @@ textarea {
     font-family: "Tahoma", sans-serif;
     color: #888;
     text-transform: uppercase;
+    font-weight: bold;
 }
 
 .news_entries ul li {
@@ -1237,7 +1238,7 @@ textarea {
 
 .child p {
     margin: 0;
-    font-size: 15px;
+    font-size: 13px;
     color: #333;
     word-break: break-word;
     font-family: "Tahoma", sans-serif;
@@ -1248,6 +1249,8 @@ p.childpage-title {
     font-weight: bold;
     color: #000;
     font-family: "Georgia", serif;
+    font-size: 15px;
+    margin-top: 5px;
 }
 
 
@@ -1364,6 +1367,11 @@ object {
     font-size: 13px;
     color: #999;
     font-family: 'Tahoma', sans-serif;
+}
+
+footer #this-menu .menu-item a.nav-link {
+    font-size: 13px;
+    color: #666;
 }
 
 @media screen and (max-width: 992px) {
