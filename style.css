@@ -1374,6 +1374,10 @@ footer #this-menu .menu-item a.nav-link {
     color: #666;
 }
 
+#menu-footer-menu {
+    margin: 0;
+}
+
 @media screen and (max-width: 992px) {
     .main-navigation li {
         float: none;
